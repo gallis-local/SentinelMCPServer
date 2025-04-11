@@ -39,6 +39,12 @@ The server acts as a bridge between development environments and Microsoft Senti
    pip install -e .
    ```
 
+   If experencing an install issue, ensure the Windows Registry key for extended python paths is enabled
+
+```
+New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
+```
+
 ### Option 2: Docker STDIO
 
 1. Run the container in STDIO mode:
@@ -170,7 +176,7 @@ SSE remote method (docker compose):
 "mcp": {
    "servers": {      
       "sentinel": {
-            "type": "ssd",
+            "type": "sse",
             "url": ["http://localhost:8000/sse"]
       }
    }
