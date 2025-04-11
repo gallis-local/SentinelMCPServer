@@ -41,16 +41,6 @@ jobs:
           images: ghcr.io/${{ github.repository }}
           tags: |
             type=ref,event=branch,pattern=main
-          labels: |
-            org.opencontainers.image.title=${GITHUB_REPOSITORY#*/}
-            org.opencontainers.image.description=Sentinel MCP Server
-            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
-            org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-            org.opencontainers.image.version=${{ github.ref_name }}
-            org.opencontainers.image.url=${{ github.server_url }}/${{ github.repository }}
-            org.opencontainers.image.authors=${{ github.repository_owner }}
-            org.opencontainers.image.maintainers=${{ github.repository_owner }}
             
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
