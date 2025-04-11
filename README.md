@@ -1,4 +1,4 @@
-# Sentinel MCP Server
+# mcp-sentinel
 
 A Python-based MCP server using FastMCP library that provides integration with Microsoft Sentinel using Azure Identity Authentication.
 
