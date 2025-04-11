@@ -52,7 +52,7 @@ The server acts as a bridge between development environments and Microsoft Senti
      -e AZURE_TENANT_ID=<your-tenant-id> \
      -e AZURE_CLIENT_ID=<your-client-id> \
      -e AZURE_CLIENT_SECRET=<your-client-secret> \
-     ghcr.io/gallis-local/SentinelMCPServer:main
+     ghcr.io/gallis-local/mcp-sentinel:main
    ```
 
 ### Option 3: Docker Compose SSE
@@ -146,7 +146,7 @@ Docker local stdio method:
              "-e", "AZURE_TENANT_ID",
              "-e", "AZURE_CLIENT_ID",
              "-e", "AZURE_CLIENT_SECRET",
-             "ghcr.io/gallis-local/SentinelMCPServer:main"
+             "ghcr.io/gallis-local/mcp-sentinel:main"
          ],
          "env": {
              "SENTINEL_SUBSCRIPTION_ID": "",
