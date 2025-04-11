@@ -8,7 +8,7 @@ This project implements an MCP server that enables:
 
 - Running KQL queries against Microsoft Sentinel
 - Listing All Sentinel Tables
-- Fetching a specific Senteinl Table for metadata
+- Fetching a specific Sentinel Table for metadata
 - Fetching specific Sentinel Table schema
 
 The server acts as a bridge between development environments and Microsoft Sentinel, allowing for testing and execution of KQL queries. It can be built for SSE or STDIO based on the launch env variable of `MCP_CONNECTION_TYPE` within the FastMCP configuration.
@@ -92,63 +92,52 @@ stdio python method:
 ```
 
 Docker local stdio method:
-```
 ```json
 "mcp": {
    "servers": {          
-"sentinel": {
-                "command": "docker",
-                "args": [
-                    "run",
-                    "-i",
-                    "--rm",
-                    "-e", 
-                    "SENTINEL_SUBSCRIPTION_ID",
-                    "-e", 
-                    "SENTINEL_RESOURCE_GROUP",
-                    "-e", 
-                    "SENTINEL_WORKSPACE_ID",
-                    "-e", 
-                    "SENTINEL_WORKSPACE_NAME",
-                    "-e", 
-                    "AUTHENTICATION_TYPE",
-                    "-e", 
-                    "AZURE_TENANT_ID",
-                    "-e", 
-                    "AZURE_CLIENT_ID",
-                    "-e", 
-                    "AZURE_CLIENT_SECRET",
-                    "sentinel-mcp-server"
-                ],
-                "env": {
-                    "SENTINEL_SUBSCRIPTION_ID": "",
-                    "SENTINEL_RESOURCE_GROUP": "",
-                    "SENTINEL_WORKSPACE_ID": "",
-                    "SENTINEL_WORKSPACE_NAME": "",
-                    "AUTHENTICATION_TYPE": "client_secret",
-                    "AZURE_TENANT_ID": "",
-                    "AZURE_CLIENT_ID": "",
-                    "AZURE_CLIENT_SECRET": ""
-                }
-            }
+      "sentinel": {
+         "command": "docker",
+         "args": [
+             "run",
+             "-i",
+             "--rm",
+             "-e", "SENTINEL_SUBSCRIPTION_ID",
+             "-e", "SENTINEL_RESOURCE_GROUP",
+             "-e", "SENTINEL_WORKSPACE_ID",
+             "-e", "SENTINEL_WORKSPACE_NAME",
+             "-e", "AUTHENTICATION_TYPE",
+             "-e", "AZURE_TENANT_ID",
+             "-e", "AZURE_CLIENT_ID",
+             "-e", "AZURE_CLIENT_SECRET",
+             "sentinel-mcp-server"
+         ],
+         "env": {
+             "SENTINEL_SUBSCRIPTION_ID": "",
+             "SENTINEL_RESOURCE_GROUP": "",
+             "SENTINEL_WORKSPACE_ID": "",
+             "SENTINEL_WORKSPACE_NAME": "",
+             "AUTHENTICATION_TYPE": "client_secret",
+             "AZURE_TENANT_ID": "",
+             "AZURE_CLIENT_ID": "",
+             "AZURE_CLIENT_SECRET": ""
+         }
+      }
    }
 }
 ```
 
-```
 
-sse remote method)(docker compose):
+SSE remote method (docker compose):
 
-```
+```json
 "mcp": {
    "servers": {      
       "sentinel": {
             "type": "ssd",
-            "url": ["http://localhost:8000/sse"
+            "url": ["http://localhost:8000/sse"]
       }
    }
 }
-    
 ```
 
 
