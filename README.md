@@ -11,7 +11,7 @@ This project implements an MCP server that enables:
 - Fetching a specific Senteinl Table for metadata
 - Fetching specific Sentinel Table schema
 
-The server acts as a bridge between development environments and Microsoft Sentinel, allowing for testing and execution of KQL queries. It can be built for SSE or STDIO based on the launch flag within the FastMCP configuration.
+The server acts as a bridge between development environments and Microsoft Sentinel, allowing for testing and execution of KQL queries. It can be built for SSE or STDIO based on the launch env variable of `MCP_CONNECTION_TYPE` within the FastMCP configuration.
 
 ## Features
 
@@ -41,6 +41,22 @@ The server acts as a bridge between development environments and Microsoft Senti
 
 ## Usage
 
+### Environment Variables
+
+The following environment variables can be configured:
+
+| Variable | Description | Default Value | Required |
+|----------|-------------|---------------|----------|
+| `SENTINEL_SUBSCRIPTION_ID` | Azure subscription ID containing the Sentinel workspace | - | Yes |
+| `SENTINEL_RESOURCE_GROUP` | Resource group name containing the Sentinel workspace | - | Yes |
+| `SENTINEL_WORKSPACE_NAME` | Name of your Sentinel workspace | - | Yes |
+| `SENTINEL_WORKSPACE_ID` | Unique identifier of your Sentinel workspace | - | Yes |
+| `AUTHENTICATION_TYPE` | Authentication method (`interactive`, `client_secret`, or defaults to managed identity) | `interactive` | No |
+| `AZURE_TENANT_ID` | Azure tenant ID (required for `client_secret` auth) | - | For client_secret auth |
+| `AZURE_CLIENT_ID` | Application/client ID (required for `client_secret` auth) | - | For client_secret auth |
+| `AZURE_CLIENT_SECRET` | Secret value for authentication (required for `client_secret` auth) | - | For client_secret auth |
+| `MCP_CONNECTION_TYPE` | Connection type for MCP server (`stdio` or `sse`) | `stdio` | No |
+
 ### Starting the Server
 
 After installation, run the MCP server using the command:
@@ -53,6 +69,86 @@ You can also run directly from the repository:
 
 ```
 python -m sentinel_mcp
+```
+
+### Configure VSCode
+
+stdio python method:
+```
+"mcp": {
+   "servers": {          
+      "sentinel": {
+            "command": "python3",
+            "args": ["-m", "sentinel_mcp"],
+            "env": {
+               "SENTINEL_SUBSCRIPTION_ID": "",
+               "SENTINEL_RESOURCE_GROUP": "",
+               "SENTINEL_WORKSPACE_ID": "",
+               "SENTINEL_WORKSPACE_NAME": ""
+            }
+      }
+   }
+}
+```
+
+Docker local stdio method:
+```
+```json
+"mcp": {
+   "servers": {          
+"sentinel": {
+                "command": "docker",
+                "args": [
+                    "run",
+                    "-i",
+                    "--rm",
+                    "-e", 
+                    "SENTINEL_SUBSCRIPTION_ID",
+                    "-e", 
+                    "SENTINEL_RESOURCE_GROUP",
+                    "-e", 
+                    "SENTINEL_WORKSPACE_ID",
+                    "-e", 
+                    "SENTINEL_WORKSPACE_NAME",
+                    "-e", 
+                    "AUTHENTICATION_TYPE",
+                    "-e", 
+                    "AZURE_TENANT_ID",
+                    "-e", 
+                    "AZURE_CLIENT_ID",
+                    "-e", 
+                    "AZURE_CLIENT_SECRET",
+                    "sentinel-mcp-server"
+                ],
+                "env": {
+                    "SENTINEL_SUBSCRIPTION_ID": "",
+                    "SENTINEL_RESOURCE_GROUP": "",
+                    "SENTINEL_WORKSPACE_ID": "",
+                    "SENTINEL_WORKSPACE_NAME": "",
+                    "AUTHENTICATION_TYPE": "client_secret",
+                    "AZURE_TENANT_ID": "",
+                    "AZURE_CLIENT_ID": "",
+                    "AZURE_CLIENT_SECRET": ""
+                }
+            }
+   }
+}
+```
+
+```
+
+sse remote method)(docker compose):
+
+```
+"mcp": {
+   "servers": {      
+      "sentinel": {
+            "type": "ssd",
+            "url": ["http://localhost:8000/sse"
+      }
+   }
+}
+    
 ```
 
 

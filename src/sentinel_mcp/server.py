@@ -82,7 +82,9 @@ class SentinelServer:
             credential = ClientSecretCredential(
                 tenant_id=os.getenv('AZURE_TENANT_ID'),
                 client_id=os.getenv('AZURE_CLIENT_ID'),
-                client_secret=os.getenv('AZURE_CLIENT_SECRET')
+                client_secret=os.getenv('AZURE_CLIENT_SECRET'),
+                # Add disable_instance_discovery to bypass regional discovery
+                disable_instance_discovery=True
             )
             logger.info("Client secret credential created")
         else:
@@ -144,7 +146,13 @@ class SentinelServer:
         
         # Run MCP server with stdio or sse transport after authentication is complete
         logger.info("Starting MCP server...")
-        self.mcp.run(transport="stdio")
+        connection_type = os.getenv('MCP_CONNECTION_TYPE', 'stdio')
+        if connection_type == "sse":
+            logger.info("Running MCP server with SSE transport")
+            self.mcp.run(transport="sse")
+        else:
+            logger.info("Running MCP server with stdio transport")
+            self.mcp.run(transport="stdio")
 
 def main():
     # Parse command line arguments

@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sentinel-mcp-server
+    container_name: sentinel-mcp-server
+    ports:
+      - "8000:8000"
+    # for env file usage
+    env_file:
+      - .env
+    environment:
+      # MCP server configuration for SSE connection testing
+      - MCP_CONNECTION_TYPE=sse
+      - AUTHENTICATION_TYPE=client_secret
+      # Set these environment variables as needed
+      - SENTINEL_SUBSCRIPTION_ID=${SENTINEL_SUBSCRIPTION_ID}
+      - SENTINEL_RESOURCE_GROUP=${SENTINEL_RESOURCE_GROUP}
+      - SENTINEL_WORKSPACE_NAME=${SENTINEL_WORKSPACE_NAME}
+      - SENTINEL_WORKSPACE_ID=${SENTINEL_WORKSPACE_ID}
+      # Required for client_secret authentication
+      - AZURE_TENANT_ID=${AZURE_TENANT_ID}
+      - AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
+      - AZURE_CLIENT_SECRET=${AZURE_CLIENT_SECRET}
+    volumes:
+      # Optional: For development, mount your source code
+      # - ./src:/app/src
+      # Persist authentication tokens
+      - mcp-data:/app/.mcp
+    restart: unless-stopped
+
+volumes:
+  mcp-data:
+    # This volume stores authentication tokens between container restarts
