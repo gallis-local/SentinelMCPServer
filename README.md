@@ -39,6 +39,48 @@ The server acts as a bridge between development environments and Microsoft Senti
    pip install -e .
    ```
 
+### Option 2: Docker STDIO
+
+1. Build the Docker image:
+   ```
+   docker build -t sentinel-mcp-server .
+   ```
+
+2. Run the container in STDIO mode:
+   ```
+   docker run -i --rm \
+     -e SENTINEL_SUBSCRIPTION_ID=<your-subscription-id> \
+     -e SENTINEL_RESOURCE_GROUP=<your-resource-group> \
+     -e SENTINEL_WORKSPACE_NAME=<your-workspace-name> \
+     -e SENTINEL_WORKSPACE_ID=<your-workspace-id> \
+     -e AUTHENTICATION_TYPE=client_secret \
+     -e AZURE_TENANT_ID=<your-tenant-id> \
+     -e AZURE_CLIENT_ID=<your-client-id> \
+     -e AZURE_CLIENT_SECRET=<your-client-secret> \
+     sentinel-mcp-server
+   ```
+
+### Option 3: Docker Compose SSE
+
+1. Create a `.env` file with your environment variables:
+   ```
+   SENTINEL_SUBSCRIPTION_ID=<your-subscription-id>
+   SENTINEL_RESOURCE_GROUP=<your-resource-group>
+   SENTINEL_WORKSPACE_NAME=<your-workspace-name>
+   SENTINEL_WORKSPACE_ID=<your-workspace-id>
+   AUTHENTICATION_TYPE=client_secret
+   AZURE_TENANT_ID=<your-tenant-id>
+   AZURE_CLIENT_ID=<your-client-id>
+   AZURE_CLIENT_SECRET=<your-client-secret>
+   ```
+
+2. Start the server using Docker Compose:
+   ```
+   docker-compose up -d
+   ```
+
+3. The MCP server will be available at `http://localhost:8000/sse`
+
 ## Usage
 
 ### Environment Variables
