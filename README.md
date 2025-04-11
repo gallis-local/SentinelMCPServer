@@ -41,12 +41,7 @@ The server acts as a bridge between development environments and Microsoft Senti
 
 ### Option 2: Docker STDIO
 
-1. Build the Docker image:
-   ```
-   docker build -t sentinel-mcp-server .
-   ```
-
-2. Run the container in STDIO mode:
+1. Run the container in STDIO mode:
    ```
    docker run -i --rm \
      -e SENTINEL_SUBSCRIPTION_ID=<your-subscription-id> \
@@ -57,7 +52,7 @@ The server acts as a bridge between development environments and Microsoft Senti
      -e AZURE_TENANT_ID=<your-tenant-id> \
      -e AZURE_CLIENT_ID=<your-client-id> \
      -e AZURE_CLIENT_SECRET=<your-client-secret> \
-     sentinel-mcp-server
+     ghcr.io/gallis-local/SentinelMCPServer:main
    ```
 
 ### Option 3: Docker Compose SSE
@@ -151,7 +146,7 @@ Docker local stdio method:
              "-e", "AZURE_TENANT_ID",
              "-e", "AZURE_CLIENT_ID",
              "-e", "AZURE_CLIENT_SECRET",
-             "sentinel-mcp-server"
+             "ghcr.io/gallis-local/SentinelMCPServer:main"
          ],
          "env": {
              "SENTINEL_SUBSCRIPTION_ID": "",

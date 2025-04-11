@@ -13,8 +13,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the source code to the container
 COPY . .
 
-# Install the package in development mode
-RUN pip install -e .
+# Install the package 
+RUN pip install  .
 
 # Set environment variables
 # These can be overridden at runtime
