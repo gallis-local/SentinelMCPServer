@@ -8,6 +8,7 @@ This project implements an MCP server that enables:
 
 - Running KQL queries against Microsoft Sentinel
 - Listing All Sentinel Tables
+- Fetching a specific Senteinl Table for metadata
 - Fetching specific Sentinel Table schema
 
 The server acts as a bridge between development environments and Microsoft Sentinel, allowing for testing and execution of KQL queries. It can be built for SSE or STDIO based on the launch flag within the FastMCP configuration.
@@ -59,9 +60,10 @@ python -m sentinel_mcp
 
 The MCP server provides the following tools:
 
-1. **run_sentinel_query**: Execute KQL queries in Sentinel
-2. **list_sentinel_tables**: List all available tables in your Sentinel workspace
-3. **get_sentinel_table_schema**: Fetch the schema for a specific Sentinel table
+1. **sentinel_run_query**: Execute KQL queries in Sentinel
+2. **sentinel_get_tables**: List all available tables in your Sentinel workspace
+3. **sentinel_get_table_schema**: Fetch the schema for a specific Sentinel table
+4. **sentinel_get_table_by_name**: Get information for a specific table by name
 
 ## Contributing
 
