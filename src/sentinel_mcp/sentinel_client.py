@@ -55,7 +55,7 @@ class SentinelClient:
         Uses Azure REST API to fetch table information directly.
         
         Returns:
-            dict: Dictionary containing status and result (list of tables with basic information)
+            dict: Dictionary containing status and result (list of tables with only name and displayName)
         """
         results_object = {}
         try:
@@ -78,31 +78,15 @@ class SentinelClient:
             # Process the response
             tables_data = response.json()
             
-            # Extract table names and basic properties (excluding detailed schema)
+            # Extract only table names and display names
             tables = []
             if 'value' in tables_data:
                 for table in tables_data['value']:
-                    properties = table.get('properties', {})
-                    
-                    # Create a simplified table info object with essential information
+                    # Create a minimal table info object with just name 
                     table_info = {
-                        'name': table.get('name', ''),
-                        'id': table.get('id', ''),
-                        'type': table.get('type', ''),
-                        'properties': {
-                            'retentionInDays': properties.get('retentionInDays', 0),
-                            'totalRetentionInDays': properties.get('totalRetentionInDays', 0),
-                            'plan': properties.get('plan', ''),
-                            'provisioningState': properties.get('provisioningState', '')
-                        }
+                        'name': table.get('name', '')
                     }
                     
-                    # Add table type information (without detailed schema)
-                    if 'schema' in properties:
-                        schema = properties.get('schema', {})
-                        table_info['tableType'] = schema.get('tableType', '')
-                        table_info['tableSubType'] = schema.get('tableSubType', '')
-                        table_info['displayName'] = schema.get('displayName', '')
                     
                     tables.append(table_info)
             
