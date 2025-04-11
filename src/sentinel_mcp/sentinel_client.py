@@ -55,7 +55,7 @@ class SentinelClient:
         Uses Azure REST API to fetch table information directly.
         
         Returns:
-            dict: Dictionary containing status and result (list of tables)
+            dict: Dictionary containing status and result (list of tables with basic information)
         """
         results_object = {}
         try:
@@ -78,16 +78,32 @@ class SentinelClient:
             # Process the response
             tables_data = response.json()
             
-            # Extract table names and properties
+            # Extract table names and basic properties (excluding detailed schema)
             tables = []
             if 'value' in tables_data:
                 for table in tables_data['value']:
+                    properties = table.get('properties', {})
+                    
+                    # Create a simplified table info object with essential information
                     table_info = {
                         'name': table.get('name', ''),
+                        'id': table.get('id', ''),
                         'type': table.get('type', ''),
-                        'lastUpdatedDate': table.get('properties', {}).get('lastUpdatedDate', ''),
-                        'retentionInDays': table.get('properties', {}).get('retentionInDays', 0)
+                        'properties': {
+                            'retentionInDays': properties.get('retentionInDays', 0),
+                            'totalRetentionInDays': properties.get('totalRetentionInDays', 0),
+                            'plan': properties.get('plan', ''),
+                            'provisioningState': properties.get('provisioningState', '')
+                        }
                     }
+                    
+                    # Add table type information (without detailed schema)
+                    if 'schema' in properties:
+                        schema = properties.get('schema', {})
+                        table_info['tableType'] = schema.get('tableType', '')
+                        table_info['tableSubType'] = schema.get('tableSubType', '')
+                        table_info['displayName'] = schema.get('displayName', '')
+                    
                     tables.append(table_info)
             
             results_object = {"status": "success", "result": tables}
@@ -129,6 +145,75 @@ class SentinelClient:
             
             
             results_object = {"status": "success", "result": table_data}
+        except Exception as err:
+            results_object = {"status": "error", "result": str(err)}
+            
+        return results_object
+        
+    def get_table_by_name(self, table_name):
+        """
+        Get information for a specific table by name in Azure Sentinel workspace.
+        Uses the Tables GET endpoint from Azure Log Analytics API.
+        Returns table metadata without columns information (which can be fetched separately).
+        
+        Args:
+            table_name (str): The name of the table to retrieve
+            
+        Returns:
+            dict: Dictionary containing status and result with table information
+        """
+        results_object = {}
+        try:
+            # Get access token from credential
+            token = self.credential.get_token(self.scope).token
+            
+            # Construct the URL to get the specific table
+            url = f"https://management.azure.com/subscriptions/{self.subscriptionId}/resourceGroups/{self.resourceGroupName}/providers/Microsoft.OperationalInsights/workspaces/{self.workspaceName}/tables/{table_name}?api-version={self.API_version_tables}"
+            
+            # Set up headers with the access token
+            headers = {
+                'Authorization': f'Bearer {token}',
+                'Content-Type': 'application/json'
+            }
+            
+            # Make the request
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+            
+            # Process the response
+            table_data = response.json()
+            
+            # Extract relevant table information
+            table_info = {
+                'name': table_data.get('name', ''),
+                'id': table_data.get('id', ''),
+                'type': table_data.get('type', ''),
+            }
+            
+            # Add properties
+            properties = table_data.get('properties', {})
+            if properties:
+                table_info['properties'] = {
+                    'retentionInDays': properties.get('retentionInDays', 0),
+                    'totalRetentionInDays': properties.get('totalRetentionInDays', 0),
+                    'archiveRetentionInDays': properties.get('archiveRetentionInDays', 0),
+                    'plan': properties.get('plan', ''),
+                    'provisioningState': properties.get('provisioningState', '')
+                }
+            
+            # Add schema metadata (excluding columns and standardColumns which are too verbose)
+            schema = properties.get('schema', {})
+            if schema:
+                table_info['schema'] = {
+                    'name': schema.get('name', ''),
+                    'tableType': schema.get('tableType', ''),
+                    'tableSubType': schema.get('tableSubType', ''),
+                    'displayName': schema.get('displayName', ''),
+                    'description': schema.get('description', '')
+                    # columns and standardColumns are excluded as they're fetched by get_table_schema
+                }
+            
+            results_object = {"status": "success", "result": table_info}
         except Exception as err:
             results_object = {"status": "error", "result": str(err)}
             

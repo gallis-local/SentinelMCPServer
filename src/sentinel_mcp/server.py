@@ -55,6 +55,20 @@ class SentinelServer:
                 name, type, and description for each column.
             """
             return self.sentinel_client.get_table_schema(table_name)
+            
+        @self.mcp.tool()
+        def sentinel_get_table_by_name(table_name: str) -> str:
+            """ Get information for a specific table by name in Azure Sentinel workspace.
+            This tool retrieves targeted information about a specific table using the Tables GET endpoint.
+            
+            Args:
+                table_name: The name of the table to retrieve information for
+                
+            Returns:
+                A dictionary containing structured table information including basic properties,
+                retention settings, and schema details with columns.
+            """
+            return self.sentinel_client.get_table_by_name(table_name)
 
     def auth(self, auth_type):
         """  
